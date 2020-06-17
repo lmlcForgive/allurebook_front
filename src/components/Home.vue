@@ -5,7 +5,14 @@
         <el-button slot="append" icon="el-icon-search" @click="search"></el-button>
       </el-input>
     </el-header>
-    <el-main>Main</el-main>
+    <el-main>
+      <el-table :data="books" style="width: 100%">
+        <el-table-column prop="bookName" label="书名" width="180">
+        </el-table-column>
+        <el-table-column prop="author" label="作者" width="180">
+        </el-table-column>
+      </el-table>
+    </el-main>
   </el-container>
 </template>
 
@@ -14,7 +21,8 @@
     name: 'Home',
     data () {
       return {
-        bookName: ''
+        bookName: '',
+        books: []
       }
     },
     created () {
@@ -22,7 +30,8 @@
     methods: {
       async search () {
         const { data: res } = await this.$http.post('/book', { bookName: this.bookName })
-        console.log(res)
+        // console.log(res)
+        this.books = res
       }
     }
   }
