@@ -11,6 +11,18 @@
         </el-table-column>
         <el-table-column prop="author" label="作者" width="180">
         </el-table-column>
+        <el-table-column prop="url" label="链接" width="200">
+        </el-table-column>
+        <el-table-column label="书源">
+          <template slot-scope="scope">
+            <el-select v-model="scope.row.url" placeholder="请选择">
+              <el-option v-for="item in toArray(scope.row.source)"
+                         :key="item.sUrl"
+                         :label="item.sName"
+                         :value="item.sUrl"></el-option>
+            </el-select>
+          </template>
+        </el-table-column>
       </el-table>
     </el-main>
   </el-container>
@@ -22,7 +34,8 @@
     data () {
       return {
         bookName: '',
-        books: []
+        books: [],
+        src: ''
       }
     },
     created () {
@@ -30,8 +43,25 @@
     methods: {
       async search () {
         const { data: res } = await this.$http.post('/book', { bookName: this.bookName })
-        // console.log(res)
+        console.log(res)
+        // console.log(res[0].source)
+        // for (var key in res[0].source) {
+        //   console.log(key)
+        //   console.log(res[0].source[key])
+        // }
         this.books = res
+      },
+      toArray (map) {
+        // console.log(map)
+        var list = []
+        for (var key in map) {
+          list.push({
+            sName: key,
+            sUrl: map[key]
+          })
+        }
+        // console.log(list)
+        return list
       }
     }
   }
