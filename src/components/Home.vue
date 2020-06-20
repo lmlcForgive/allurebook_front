@@ -11,9 +11,12 @@
         </el-table-column>
         <el-table-column prop="author" label="作者" width="180">
         </el-table-column>
-        <el-table-column prop="url" label="链接" width="200">
+        <el-table-column label="链接" width="200">
+          <template slot-scope="scope">
+            <a :href="scope.row.url" target="_blank">{{scope.row.url}}</a>
+          </template>
         </el-table-column>
-        <el-table-column label="书源">
+        <el-table-column label="书源" width="200">
           <template slot-scope="scope">
             <el-select v-model="scope.row.url" placeholder="请选择">
               <el-option v-for="item in toArray(scope.row.source)"
@@ -23,7 +26,13 @@
             </el-select>
           </template>
         </el-table-column>
+        <el-table-column label="书源信息" width="180">
+          <template slot-scope="scope">
+            {{toString(scope.row.source)}}
+          </template>
+        </el-table-column>
       </el-table>
+      {{timestamp}}
     </el-main>
   </el-container>
 </template>
@@ -35,20 +44,37 @@
       return {
         bookName: '',
         books: [],
-        src: ''
+        src: '',
+        timestamp: ''
       }
     },
     created () {
+      // window.setInterval(this.rf, 1000)
     },
     methods: {
-      async search () {
-        const { data: res } = await this.$http.post('/book', { bookName: this.bookName })
-        console.log(res)
-        // console.log(res[0].source)
-        // for (var key in res[0].source) {
-        //   console.log(key)
-        //   console.log(res[0].source[key])
-        // }
+      search: async function() {
+        this.timestamp = new Date().getTime()
+        const interval = window.setInterval(this.rf, 1000)
+        await this.$http.post('/book', {
+          bookName: this.bookName,
+          timestamp: this.timestamp
+        })
+        window.clearInterval(interval)
+        this.$message.success('搜索结束')
+        // console.log(res)
+        // this.books = res
+        // window.setInterval()
+        // const { data: res1 } = await this.$http.post('/test', {
+        //   bookName: this.bookName,
+        //   timestamp: this.timestamp
+        // })
+        // this.books = res1
+      },
+      async rf () {
+        const { data: res } = await this.$http.post('/test', {
+          bookName: this.bookName,
+          timestamp: this.timestamp
+        })
         this.books = res
       },
       toArray (map) {
@@ -62,6 +88,13 @@
         }
         // console.log(list)
         return list
+      },
+      toString (map) {
+        var str = ''
+        for (var key in map) {
+          str = key + ' ' + str
+        }
+        return str.trim()
       }
     }
   }
