@@ -54,7 +54,9 @@
     methods: {
       search: async function() {
         this.timestamp = new Date().getTime()
-        const interval = window.setInterval(this.rf, 1000)
+        const interval = window.setInterval(() => {
+          setTimeout(this.rf, 0)
+        }, 1000)
         await this.$http.post('/book', {
           bookName: this.bookName,
           timestamp: this.timestamp
