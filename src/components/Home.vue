@@ -1,7 +1,8 @@
 <template>
   <el-container class="home-container">
     <el-header>
-      <el-input placeholder="请输入书名" v-model="bookName">
+      <el-input placeholder="请输入书名" v-model="bookName" class="search-input"
+                @keyup.enter.native="search">
         <el-button slot="append" icon="el-icon-search" @click="search"></el-button>
       </el-input>
     </el-header>
@@ -43,58 +44,23 @@
     data () {
       return {
         bookName: '',
-        books: [],
-        src: '',
-        timestamp: ''
+        books: []
       }
     },
     created () {
       // window.setInterval(this.rf, 1000)
     },
     methods: {
-      search () {
-        this.timestamp = new Date().getTime()
-        const interval = window.setInterval(() => {
-          setTimeout(this.rf, 0)
-        }, 1000)
-        this.$http.post('/book', {
-          bookName: this.bookName,
-          timestamp: this.timestamp
-        }).then(response => {
-          window.clearInterval(interval)
-          this.$message.success('搜索结束')
-          // eslint-disable-next-line handle-callback-err
-        }, err => {
-          window.clearInterval(interval)
-          this.$message.error('搜索失败！')
-        })
-        // const data = await this.$http.post('/book', {
-        //   bookName: this.bookName,
-        //   timestamp: this.timestamp
-        // })
-        // console.log(data)
-        // this.$message.success('搜索结束')
-
-        // console.log(res)
-        // this.books = res
-        // window.setInterval()
-        // const { data: res1 } = await this.$http.post('/test', {
-        //   bookName: this.bookName,
-        //   timestamp: this.timestamp
-        // })
-        // this.books = res1
-      },
-      async rf () {
-        const { data: res } = await this.$http.post('/test', {
-          bookName: this.bookName,
-          timestamp: this.timestamp
+      async search () {
+        const { data: res } = await this.$http.post('/book', {
+          bookName: this.bookName
         })
         this.books = res
       },
       toArray (map) {
         // console.log(map)
-        var list = []
-        for (var key in map) {
+        const list = []
+        for (const key in map) {
           list.push({
             sName: key,
             sUrl: map[key]
@@ -104,8 +70,8 @@
         return list
       },
       toString (map) {
-        var str = ''
-        for (var key in map) {
+        let str = ''
+        for (const key in map) {
           str = key + ' ' + str
         }
         return str.trim()
@@ -127,5 +93,8 @@
 
   .el-main {
     background-color: #E4E7ED;
+  }
+
+  .search-input {
   }
 </style>
