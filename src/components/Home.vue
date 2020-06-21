@@ -32,7 +32,7 @@
           </template>
         </el-table-column>
       </el-table>
-      {{timestamp}}
+      <!--      {{timestamp}}-->
     </el-main>
   </el-container>
 </template>
@@ -52,17 +52,29 @@
       // window.setInterval(this.rf, 1000)
     },
     methods: {
-      search: async function() {
+      search () {
         this.timestamp = new Date().getTime()
         const interval = window.setInterval(() => {
           setTimeout(this.rf, 0)
         }, 1000)
-        await this.$http.post('/book', {
+        this.$http.post('/book', {
           bookName: this.bookName,
           timestamp: this.timestamp
+        }).then(response => {
+          window.clearInterval(interval)
+          this.$message.success('搜索结束')
+          // eslint-disable-next-line handle-callback-err
+        }, err => {
+          window.clearInterval(interval)
+          this.$message.error('搜索失败！')
         })
-        window.clearInterval(interval)
-        this.$message.success('搜索结束')
+        // const data = await this.$http.post('/book', {
+        //   bookName: this.bookName,
+        //   timestamp: this.timestamp
+        // })
+        // console.log(data)
+        // this.$message.success('搜索结束')
+
         // console.log(res)
         // this.books = res
         // window.setInterval()
