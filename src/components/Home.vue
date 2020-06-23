@@ -32,7 +32,10 @@
             {{toString(scope.row.source)}}
           </template>
         </el-table-column>
-        <el-table-column label="下载" width="180" align="center">TXT下载
+        <el-table-column label="Download" width="180" align="center">
+          <template slot-scope="scope">
+            <el-button type="text" @click="download(scope.row)">TxT</el-button>
+          </template>
         </el-table-column>
       </el-table>
       <!--      {{timestamp}}-->
@@ -46,7 +49,8 @@
     data () {
       return {
         bookName: '',
-        books: []
+        books: [],
+        book: ''
       }
     },
     created () {
@@ -84,6 +88,23 @@
           str = key + ',' + str
         }
         return str.substring(0, str.lastIndexOf(','))
+      },
+      changeSource (row) {
+        // console.log(row)
+        this.book = row
+      },
+      async download (row) {
+        const confirmRes = await this.$confirm(`即将从${row.url}下载《${row.bookName}》, 是否继续?`, '提示', {
+          confirmButtonText: '确定',
+          cancelButtonText: '取消',
+          type: 'info'
+        }).catch(err => err)
+        if (confirmRes !== 'confirm') {
+          return
+        }
+        this.$message.info('后台下载任务已提交，请等待...')
+        const { data: res } = await this.$http.post('/download', row)
+        console.log(res)
       }
     }
   }

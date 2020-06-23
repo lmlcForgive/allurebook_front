@@ -1,7 +1,7 @@
 import Vue from 'vue'
 import {
   Button, Container, Message, Header, Main, Input, Table, TableColumn,
-  Select, Option, Loading
+  Select, Option, Loading, MessageBox
 } from 'element-ui'
 
 Vue.use(Button)
@@ -32,3 +32,4 @@ Vue.prototype.openLoading = function() {
 }
 
 Vue.prototype.$message = Message
+Vue.prototype.$confirm = MessageBox.confirm

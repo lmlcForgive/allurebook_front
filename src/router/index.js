@@ -11,10 +11,10 @@ const routes = [
   },
   {
     path: '/home',
-    component: Home,
-    meta: {
-      title: 'allurebook'
-    }
+    component: Home
+    // meta: {
+    //   title: 'allurebook'
+    // }
   }
 ]
 
