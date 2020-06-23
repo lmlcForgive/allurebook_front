@@ -1,4 +1,12 @@
 module.exports = {
+  chainWebpack: config => {
+    config
+      .plugin('html')
+      .tap(args => {
+        args[0].title = 'allurebook'
+        return args
+      })
+  },
   devServer: {
     open: true,
     port: 8083,

@@ -14,6 +14,8 @@ axios.interceptors.request.use(config => {
 })
 Vue.prototype.$http = axios
 
+// Vue.use(require('vue-wechat-title'))
+
 Vue.config.productionTip = false
 
 new Vue({

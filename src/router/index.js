@@ -11,7 +11,10 @@ const routes = [
   },
   {
     path: '/home',
-    component: Home
+    component: Home,
+    meta: {
+      title: 'allurebook'
+    }
   }
 ]
 
