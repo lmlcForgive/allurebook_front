@@ -7,19 +7,19 @@
       </el-input>
     </el-header>
     <el-main>
-      <el-table :data="books" style="width: 100%">
-        <el-table-column prop="bookName" label="书名" width="180">
+      <el-table :data="books" style="width: 100%" class="novel-table">
+        <el-table-column prop="bookName" label="书名" width="180" align="center">
         </el-table-column>
-        <el-table-column prop="author" label="作者" width="180">
+        <el-table-column prop="author" label="作者" width="180" align="center">
         </el-table-column>
-        <el-table-column label="链接" width="200">
+        <el-table-column label="链接" width="200" align="center">
           <template slot-scope="scope">
             <a :href="scope.row.url" target="_blank">{{scope.row.url}}</a>
           </template>
         </el-table-column>
-        <el-table-column label="书源" width="200">
+        <el-table-column label="书源" width="150" align="center">
           <template slot-scope="scope">
-            <el-select v-model="scope.row.url" placeholder="请选择">
+            <el-select v-model="scope.row.url" placeholder="请选择" popper-class="source-select">
               <el-option v-for="item in toArray(scope.row.source)"
                          :key="item.sUrl"
                          :label="item.sName"
@@ -27,10 +27,12 @@
             </el-select>
           </template>
         </el-table-column>
-        <el-table-column label="书源信息" width="180">
+        <el-table-column label="书源信息" width="180" align="center">
           <template slot-scope="scope">
             {{toString(scope.row.source)}}
           </template>
+        </el-table-column>
+        <el-table-column label="下载" width="180" align="center">TXT下载
         </el-table-column>
       </el-table>
       <!--      {{timestamp}}-->
@@ -51,11 +53,18 @@
       // window.setInterval(this.rf, 1000)
     },
     methods: {
-      async search () {
-        const { data: res } = await this.$http.post('/book', {
+      search () {
+        const rLoading = this.openLoading()
+        this.$http.post('/book', {
           bookName: this.bookName
+        }).then(response => {
+          this.books = response.data
+          rLoading.close()
+          // eslint-disable-next-line handle-callback-err
+        }, err => {
+          rLoading.close()
         })
-        this.books = res
+        // this.books = res
       },
       toArray (map) {
         // console.log(map)
@@ -72,9 +81,9 @@
       toString (map) {
         let str = ''
         for (const key in map) {
-          str = key + ' ' + str
+          str = key + ',' + str
         }
-        return str.trim()
+        return str.substring(0, str.lastIndexOf(','))
       }
     }
   }
