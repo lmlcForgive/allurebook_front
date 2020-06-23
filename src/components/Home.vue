@@ -103,8 +103,22 @@
           return
         }
         this.$message.info('后台下载任务已提交，请等待...')
-        const { data: res } = await this.$http.post('/download', row)
-        console.log(res)
+        this.$http.post('/download', row, { responseType: 'blob' })
+          .then(response => {
+            const filename = decodeURI(response.headers['content-disposition'].split(';')[1]
+              .split('=')[1].split('.')[0])
+            console.log(filename)
+            const blob = new Blob([response.data], {
+              type: 'text/plain'
+            })
+            const link = document.createElement('a')
+            link.href = window.URL.createObjectURL(blob)
+            link.download = filename
+            link.click()
+            window.URL.revokeObjectURL(link.href)
+          }, error => {
+            this.$message.error(error)
+          })
       }
     }
   }
